@@ -8,6 +8,9 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+import com.tencent.cloud.huiyansdkface.facelight.api.WbCloudFaceContant;
+
+
 /** FlutterFacePlugin */
 public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler {
   /// The MethodChannel that will the communication between Flutter and native Android
@@ -26,6 +29,8 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler {
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
+    } else if(call.method.equals("startFaceService")){
+      result.success("Name Jerry");
     } else {
       result.notImplemented();
     }
