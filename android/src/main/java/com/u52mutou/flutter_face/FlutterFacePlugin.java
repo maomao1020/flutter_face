@@ -37,14 +37,13 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler , Act
   /// when the Flutter Engine is detached from the Activity
   private static final String TAG = "FlutterFacePlugin";
   private MethodChannel channel;
-  private Context context;
   private Activity activity;
 
 
 
   @Override
   public void onAttachedToActivity(@NonNull @NotNull ActivityPluginBinding binding) {
-
+    activity  = binding.getActivity();
   }
 
   @Override
@@ -55,7 +54,6 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler , Act
   @Override
   public void onReattachedToActivityForConfigChanges(@NonNull @NotNull ActivityPluginBinding binding) {
 
-    activity  = binding.getActivity();
   }
 
   @Override
@@ -66,7 +64,6 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler , Act
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_face");
-    this.context = flutterPluginBinding.getApplicationContext();
     channel.setMethodCallHandler(this);
   }
 
@@ -90,7 +87,6 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler , Act
       Map<String, String> config = call.argument("config");
 
       openCloudFaceService(faceId, orderNo, appId, nonce, userId, sign, mode, type, licence, config, result);
-      result.success("Name Jerry");
     } else {
       result.notImplemented();
     }
@@ -101,7 +97,7 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler , Act
     channel.setMethodCallHandler(null);
   }
 
-  private void openCloudFaceService(String faceId, String order, String appId, String nonce, String userId, String sign, String mode, String type, String keyLicence, Map<String, String> config, final MethodChannel.Result callbackResult) {
+  private void openCloudFaceService(String faceId, String order, String appId, String nonce, String userId, String sign, String mode, String type, String keyLicence, Map<String, String> config,MethodChannel.Result callbackResult) {
     String faceVerifyCompareType = getFaceVerifyCompareType(type);
 
     Bundle data = new Bundle();
@@ -142,11 +138,11 @@ public class FlutterFacePlugin implements FlutterPlugin, MethodCallHandler , Act
     //仅活体检测  WbCloudFaceVerifySdk.NONE
     //默认公安网纹图片比对
     data.putString(WbCloudFaceContant.COMPARE_TYPE, faceVerifyCompareType);
-    WbCloudFaceVerifySdk.getInstance().initSdk(context, data, new WbCloudFaceVerifyLoginListener() {
+    WbCloudFaceVerifySdk.getInstance().initSdk(activity, data, new WbCloudFaceVerifyLoginListener() {
 
       @Override
       public void onLoginSuccess() {
-        WbCloudFaceVerifySdk.getInstance().startWbFaceVerifySdk(context, new WbCloudFaceVerifyResultListener() {
+        WbCloudFaceVerifySdk.getInstance().startWbFaceVerifySdk(activity, new WbCloudFaceVerifyResultListener() {
 
           @Override
           public void onFinish(WbFaceVerifyResult result) {
